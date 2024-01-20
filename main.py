@@ -56,13 +56,6 @@ def stablediffusion(message):
                 photo.seek(0)
                 bot.send_message(message.chat.id, text=f"Request: {check}\nStable Diffusion:")
                 bot.send_photo(message.chat.id, photo)
-                image_bytes = query4({"inputs": check})
-                img_bytes = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
-                success, png_image = cv2.imencode('.png', img_bytes)
-                photo = io.BytesIO(png_image)
-                photo.seek(0)
-                bot.send_message(chat_id=TARGET_CHAT_ID, text=f"AI Model: Stable Diffusion \n@{use} {check}\nStable Diffusion:")
-                bot.send_photo(TARGET_CHAT_ID, photo)
             except Exception as e:
                 bot.reply_to(message, "Error: Admin is already working on fixing it")
                 bot.send_message(chat_id=TARGET_CHAT_ID, text="AI Model: Stability AI Stable Diffusion\ error: " + str(e))
