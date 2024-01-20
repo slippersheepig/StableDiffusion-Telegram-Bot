@@ -17,6 +17,7 @@ TARGET_CHAT_ID = config('TARGET_CHAT_ID')
 
 # Create bot
 bot = telebot.TeleBot(BOT_TOKEN)
+bot.set_webhook()
 
 # Queue
 queue = []
