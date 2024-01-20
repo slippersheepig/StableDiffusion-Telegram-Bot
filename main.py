@@ -129,7 +129,7 @@ def queue_command(message):
                     queue_list_min += f"Queue for Stable Diffusion ({queue_len})\n"
                 else:
                     queue_list_min += f"Queue for Stable Diffusion ({queue_len})\n"
-                    queue_list += f"Queue for Stable Diffusion ({queue_len} {queue_users}\n")
+                    queue_list += f"Queue for Stable Diffusion ({queue_len} {queue_users})\n"
             if is_exceeding_length:
                 bot.reply_to(message, queue_list_min)
             else:
