@@ -36,7 +36,7 @@ def send_welcome(message):
 ###############################################################
 @bot.message_handler(commands=['help'])
 def send_Help(message):
-    bot.reply_to(message, "Enter /stablediffusion for generating an image with your prompt\nContacts - @<YOUR_USE>")
+    bot.reply_to(message, "Enter /stablediffusion for generating an image with your prompt")
 
 #################################################################
 @bot.message_handler(commands=["report"])
