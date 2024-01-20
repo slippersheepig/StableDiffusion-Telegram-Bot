@@ -94,7 +94,7 @@ def stablediffusion(message):
                     photo.seek(0)
                     bot.send_message(message.chat.id, text=f"Request: {check}\nStable Diffusion:")
                     bot.send_photo(message.chat.id, photo)
-                    image_bytes = diffusion({"inputs": check})  # 修正此行代码
+                    image_bytes = query4({"inputs": check})  # 修正此行代码
                     img_bytes = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
                     success, png_image = cv2.imencode('.png', img_bytes)
                     photo = io.BytesIO(png_image)
@@ -122,8 +122,8 @@ def queue_command(message):
             queue_list_min = "Users in queue:\n"
             total_length = 0
             is_exceeding_length = False
-            if len(queue) > 0:  # 修正此行代码
-                queue_len = len(queue)  # 修正此行代码
+            if len(stabllediffusion_queue) > 0:  # 修正此行代码
+                stabllediffusion_queue_len = len(queue)  # 修正此行代码
                 queue_users = ", ".join([f"@{user}" for user in queue])
                 total_length += len(f"Queue for Stable Diffusion ({queue_len} {queue_users}\n")
                 if total_length > 4000:
