@@ -57,8 +57,7 @@ def stablediffusion(message):
                 bot.send_message(message.chat.id, text=f"Request: {check}\nStable Diffusion:")
                 bot.send_photo(message.chat.id, photo)
             except Exception as e:
-                bot.reply_to(message, "Error: Admin is already working on fixing it")
-                bot.send_message(chat_id=TARGET_CHAT_ID, text="AI Model: Stability AI Stable Diffusion\ error: " + str(e))
+                bot.reply_to(message, str(e))
             queue.remove(use)
         else:
             bot.reply_to(message, 'Request cannot be empty.')
