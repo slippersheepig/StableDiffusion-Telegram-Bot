@@ -9,6 +9,7 @@ from decouple import config
 # Load environment variables
 BOT_TOKEN = config('BOT_TOKEN')
 ALLOWED_USER = config('ALLOWED_USER').split(',')
+ALLOWED_GROUP = config('ALLOWED_GROUP').split(',')
 ADMIN_USERS = config('ADMIN_USERS').split(',')
 HUGGINGFACE_TOKEN = config('HUGGINGFACE_TOKEN')
 API_URL = config('API_URL')
@@ -43,7 +44,7 @@ def send_Help(message):
 @bot.message_handler(commands=["report"])
 def report(message):
     global message_text
-    if message.chat.id in ALLOWED_USER or (message.from_user.id in ALLOWED_USER and message.chat.type == "private"):  # 修正此行代码
+    if message.chat.id in ALLOWED_GROUP or (message.from_user.id in ALLOWED_USER and message.chat.type == "private"):  # 修正此行代码
         sobaka = message.from_user.username
         check = message.text
         check = check.replace("/report", "")
@@ -78,7 +79,7 @@ def ad(message):
 @bot.message_handler(commands=['stablediffusion'])
 def stablediffusion(message):
     global message_text
-    if message.chat.id in ALLOWED_USER or (message.from_user.id in ALLOWED_USER and message.chat.type == 'private'):  # 修正此行代码
+    if message.chat.id in ALLOWED_GROUP or (message.from_user.id in ALLOWED_USER and message.chat.type == 'private'):  # 修正此行代码
         use = message.from_user.username
         if use not in queue:  # 修正此行代码
             check = message.text.replace("/stablediffusion", "").replace("@BOT_USE", "").strip()
