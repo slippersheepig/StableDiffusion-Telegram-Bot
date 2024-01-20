@@ -21,7 +21,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 queue = []
 
 # Request to stable diffusion
-headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
+headers = {"Authorization": f"Bearer HUGGINGFACE_TOKEN"}
 def diffusion(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.content
@@ -42,7 +42,7 @@ def report(message):
         sobaka = message.from_user.username
         check = message.text
         check = check.replace("/report", "")
-        check = check.replace("@<BOT_USE>", "")
+        check = check.replace("@BOT_USE", "")
         if check != "":
             bot.reply_to(message, "Message sent successfully")
             bot.send_message(chat_id=TARGET_CHAT_ID, text="Report:\n@" + sobaka + " : " + check)
@@ -57,7 +57,7 @@ def ad(message):
     if (message.from_user.id in admin_users):
         message_text = message.text
         message_text = message_text.replace("/ad", "")
-        message_text = message_text.replace("@<BOT_USE>", "")
+        message_text = message_text.replace("@BOT_USE", "")
         users = 0
         bot.reply_to(message, 'ads are being sent...')
         for user in allowed_user:
@@ -73,7 +73,7 @@ def stablediffusion(message):
     if message.chat.id in allowed_group or (message.from_user.id in allowed_user and message.chat.type == 'private'):
         use = message.from_user.username
         if use is not in queue:
-            check = message.text.replace("/stablediffusion", "").replace("@<BOT_USE>", "").strip()
+            check = message.text.replace("/stablediffusion", "").replace("@BOT_USE", "").strip()
             if check != "":
                 queue.append(use)
                 bot.reply_to(message, 'Wait... \n{your position in the queue: {}'.format(len(queue))
