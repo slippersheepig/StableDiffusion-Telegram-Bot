@@ -64,9 +64,7 @@ def check_request_limit(user):
         return True
     last_request_time = user_last_request_time[user]
     time_since_last_request = current_time - last_request_time
-    # 设置请求时间间隔为60秒
-    request_interval = 60
-    if time_since_last_request < request_interval:
+    if time_since_last_request < REQUEST_INTERVAL:
         return False
     else:
         user_last_request_time[user] = current_time
