@@ -35,6 +35,7 @@ def stablediffusion(payload):
 
 def generate_image(message, user, prompt):
     try:
+        request_interval = 60
         if check_request_limit(user):  # 检查频率限制
             # 发送 "upload_photo" 动作
             bot.send_chat_action(message.chat.id, "upload_photo")
@@ -83,8 +84,6 @@ def stablediffusion_command(message):
                 queue.put(user)
                 bot.reply_to(message, f'请稍等... \n您在队列中的位置: {queue.qsize()}')
                 generate_image(message, user, prompt)
-            else:
-                bot.reply_to(message, f"请求太频繁，请等待 {request_interval} 秒后再试.")
         else:
             bot.reply_to(message, '请求不能为空.')
     else:
