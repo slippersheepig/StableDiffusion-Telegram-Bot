@@ -35,7 +35,7 @@ def generate_image(message, user, prompt):
         bot.send_chat_action(message.chat.id, "upload_photo")
         image_bytes = stablediffusion({'inputs': prompt})
         img_bytes = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
-        success, png_image = cv2.imencode('.png', img_bytes)
+        _, png_image = cv2.imencode('.png', img_bytes)
         photo = io.BytesIO(png_image)
         photo.seek(0)
         bot.send_message(message.chat.id, text=f"请求: {prompt}\nstablediffusion:")
@@ -43,7 +43,7 @@ def generate_image(message, user, prompt):
     except Exception as e:
         bot.reply_to(message, f"生成图片错误: {str(e)}")
     finally:
-        queue.put(user)
+        queue.get()  # 从队列中移除用户
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
