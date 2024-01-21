@@ -35,15 +35,18 @@ def stablediffusion(payload):
 
 def generate_image(message, user, prompt):
     try:
-        # 发送 "upload_photo" 动作
-        bot.send_chat_action(message.chat.id, "upload_photo")
-        image_bytes = stablediffusion({'inputs': prompt})
-        img_bytes = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
-        success, png_image = cv2.imencode('.png', img_bytes)
-        photo = io.BytesIO(png_image)
-        photo.seek(0)
-        bot.send_message(message.chat.id, text=f"请求: {prompt}\nstablediffusion:")
-        bot.send_photo(message.chat.id, photo)
+        if check_request_limit(user):  # 检查频率限制
+            # 发送 "upload_photo" 动作
+            bot.send_chat_action(message.chat.id, "upload_photo")
+            image_bytes = stablediffusion({'inputs': prompt})
+            img_bytes = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+            success, png_image = cv2.imencode('.png', img_bytes)
+            photo = io.BytesIO(png_image)
+            photo.seek(0)
+            bot.send_message(message.chat.id, text=f"请求: {prompt}\nstablediffusion:")
+            bot.send_photo(message.chat.id, photo)
+        else:
+            bot.reply_to(message, f"请求太频繁，请等待 {request_interval} 秒后再试.")
     except Exception as e:
         bot.reply_to(message, f"生成图片错误: {str(e)}")
     finally:
