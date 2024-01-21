@@ -12,6 +12,9 @@ BOT_TOKEN = config('BOT_TOKEN')
 HUGGINGFACE_TOKEN = config('HUGGINGFACE_TOKEN')
 API_URL = config('API_URL')
 
+# 全局常量
+REQUEST_INTERVAL = 60
+
 # 创建机器人
 bot = telebot.TeleBot(BOT_TOKEN)
 bot.set_webhook()
@@ -35,7 +38,6 @@ def stablediffusion(payload):
 
 def generate_image(message, user, prompt):
     try:
-        request_interval = 60
         if check_request_limit(user):  # 检查频率限制
             # 发送 "upload_photo" 动作
             bot.send_chat_action(message.chat.id, "upload_photo")
@@ -47,7 +49,7 @@ def generate_image(message, user, prompt):
             bot.send_message(message.chat.id, text=f"请求: {prompt}\nstablediffusion:")
             bot.send_photo(message.chat.id, photo)
         else:
-            bot.reply_to(message, f"请求太频繁，请等待 {request_interval} 秒后再试.")
+            bot.reply_to(message, f"请求太频繁，请等待 {REQUEST_INTERVAL} 秒后再试.")
     except Exception as e:
         bot.reply_to(message, f"生成图片错误: {str(e)}")
     finally:
@@ -56,7 +58,11 @@ def generate_image(message, user, prompt):
 # 增加频率限制函数
 def check_request_limit(user):
     current_time = time.time()
-    last_request_time = user_last_request_time.get(user, 0)
+    # 如果用户不在字典中，添加到字典并设置初始请求时间
+    if user not in user_last_request_time:
+        user_last_request_time[user] = current_time
+        return True
+    last_request_time = user_last_request_time[user]
     time_since_last_request = current_time - last_request_time
     # 设置请求时间间隔为60秒
     request_interval = 60
