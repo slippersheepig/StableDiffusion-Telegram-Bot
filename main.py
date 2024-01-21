@@ -67,14 +67,6 @@ def stablediffusion_command(message):
     else:
         bot.reply_to(message, "您已经在生成此模型的查询，请等待完成.")
 
-@bot.message_handler(commands=['queue'])
-def queue_command(message):
-    if not queue.empty():
-        users_in_queue = ", ".join([f"@{user}" for user in queue.queue])
-        bot.reply_to(message, f"在队列中的用户: {users_in_queue}")
-    else:
-        bot.reply_to(message, "所有队列都是空的.")
-
 def main():
     bot.polling()
 
