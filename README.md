@@ -18,7 +18,7 @@ API_URL=https://api-inference.huggingface.co/models/stabilityai/stable-diffusion
 ```bash
 services:
   chatgpt:
-    image: sheepgreen/sdbot
+    image: sheepgreen/sdbot #或使用github镜像ghcr.io/slippersheepig/sdbot
     container_name: sdbot
     volumes:
       - ./.env:/app/.env
