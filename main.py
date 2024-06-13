@@ -7,6 +7,7 @@ import logging
 from decouple import config
 from queue import Queue
 from threading import Lock
+from time import sleep
 
 # 设置日志
 logging.basicConfig(level=logging.INFO)
@@ -30,13 +31,19 @@ queue_lock = Lock()
 # 请求到stablediffusion
 headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
 
-def stablediffusion(payload):
-    try:
-        response = requests.post(API_URL, headers=headers, json=payload)
-        response.raise_for_status()
-        return response.content
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"stablediffusion请求错误: {str(e)}")
+def stablediffusion(payload, retries=3):
+    for attempt in range(retries):
+        try:
+            response = requests.post(API_URL, headers=headers, json=payload)
+            response.raise_for_status()
+            return response.content
+        except requests.exceptions.RequestException as e:
+            if attempt < retries - 1:
+                logging.warning(f"stablediffusion请求错误: {str(e)}，重试中... ({attempt+1}/{retries})")
+                sleep(2)  # 等待一段时间后重试
+            else:
+                logging.error(f"stablediffusion请求错误: {str(e)}，重试次数用尽")
+                raise Exception(f"stablediffusion请求错误: {str(e)}")
 
 def generate_image(message, user, prompt):
     try:
@@ -57,7 +64,7 @@ def generate_image(message, user, prompt):
     finally:
         with queue_lock:
             if user in queue.queue:
-                queue.get(user)  # 从队列中移除用户
+                queue.get()  # 从队列中移除用户
         photo.close()
 
 @bot.message_handler(commands=['start'])
@@ -88,7 +95,7 @@ def stablediffusion_command(message):
             bot.reply_to(message, "您已经在生成此模型的查询，请等待完成.")
 
 def main():
-    bot.polling()
+    bot.polling(none_stop=True)
 
 if __name__ == "__main__":
     main()
