@@ -1,5 +1,5 @@
-telebot
-requests
-numpy
-opencv-python-headless
-python-decouple
+telebot==0.0.5
+requests==2.32.3
+numpy==1.26.4
+opencv-python-headless==4.10.0.82
+python-decouple==3.8
