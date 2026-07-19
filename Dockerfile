@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Define environment variable for Python to run in unbuffered mode
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # Run app.py when the container launches
 CMD ["python", "main.py"]
