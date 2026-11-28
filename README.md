@@ -1,27 +1,53 @@
-搭配[Hugging Face](https://huggingface.co/models)使用的图片生成机器人
+# StableDiffusion Telegram Bot
+
+搭配 [Hugging Face Inference API](https://huggingface.co/models) 使用的 Telegram 文生图机器人。
+
 > [!TIP]
-> 需注册Hugging Face账号，在个人信息profile处点击settings-access tokens生成api复制备用
+> 需注册 Hugging Face 账号，前往个人主页 **Settings -> Access Tokens** 生成具有推理调用权限的 Token 备用。
 
 > [!NOTE]
-> 该代码仅兼容StableDiffusion模型，其他模型未测试
+> 默认适配 Stable Diffusion 等文生图（Text-to-Image）推理接口。
 
-`.env`
-```bash
+## 快速部署
+
+在同一目录下创建 `.env` 与 `docker-compose.yml` 两个文件：
+
+### 1. 配置环境变量 `.env`
+
+```ini
 HUGGINGFACE_TOKEN=hf_ABCDEFGHIJKLMNOPQRSTUVWXYZ
 BOT_TOKEN=123456789:abcdefghijklmnopqrstuvwxyz
-API_URL=https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1
+API_URL=https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0
 ```
-（必填）HUGGINGFACEHUB_TOKEN：填入tip提到的api  
-（必填）BOT_TOKEN：电报机器人token  
-（必填）API_URL：调用模型的API链接，可在HuggingFace的模型详情页面右上方Deploy-Inference API查看  
-`docker-compose.yml`
-```bash
+
+| 变量名 | 是否必填 | 说明 |
+| :--- | :---: | :--- |
+| `HUGGINGFACE_TOKEN` | 必填 | Hugging Face Access Token |
+| `BOT_TOKEN` | 必填 | Telegram Bot Token（通过 `@BotFather` 获取） |
+| `API_URL` | 必填 | 模型推理 API 地址，可在模型详情页 **Deploy -> Inference API** 查看 |
+
+### 2. 配置 `docker-compose.yml`
+
+```yaml
 services:
-  chatgpt:
-    image: sheepgreen/sdbot #或使用github镜像ghcr.io/slippersheepig/sdbot
+  sdbot:
+    image: sheepgreen/sdbot # 或使用 GitHub 镜像 ghcr.io/slippersheepig/sdbot
     container_name: sdbot
-    volumes:
-      - ./.env:/app/.env
-    restart: always
+    env_file:
+      - .env
+    restart: unless-stopped
 ```
-以上两个文件放同一目录，然后运行`docker-compose up -d`命令即可
+
+> 兼容旧版挂载方式：也可继续使用 `volumes: ["./.env:/app/.env:ro"]`。
+
+### 3. 启动服务
+
+```bash
+docker compose up -d
+```
+
+## 机器人指令
+
+- `/start` — 启动机器人并打开快捷操作菜单
+- `/help` — 查看指令使用说明
+- `/sd <提示词>` — 根据提示词生成图像（支持重新生成与一键删除）
