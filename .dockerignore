@@ -1,3 +1,10 @@
 .git
+.github
+.env
+.venv
+venv
+__pycache__
+*.py[cod]
 Dockerfile
 README.md
+docker-compose.yml
