@@ -1,5 +1,4 @@
-telebot==0.0.5
-requests==2.34.2
-numpy==2.5.5
-opencv-python-headless==5.1.0.95
+Pillow==12.3.0
+pyTelegramBotAPI==4.37.0
 python-decouple==3.8
+requests==2.34.2
